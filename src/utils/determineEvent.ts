@@ -8,4 +8,8 @@ export const determineEvent = (str: string): BluetoothEvent | undefined => {
   if (/Connected: no/.test(str)) {
     return BluetoothEvent.Disconnected;
   }
+
+  if (/Paired: yes/.test(str)) {
+    return BluetoothEvent.Paired;
+  }
 };

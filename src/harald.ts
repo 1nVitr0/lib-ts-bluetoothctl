@@ -27,22 +27,25 @@ export class Harald extends EventEmitter {
       throw `Expected platform linux, recieved platform ${platform()}`;
     }
 
-    this.terminal.onData((data) => {
-
-      if (data.includes('bluetoothctl is ') && data.includes('/usr/bin/bluetoothctl')) {
-        this.terminal.write('bluetoothctl\r');
-        this.terminal.write('power on\r');
-        this.terminal.write('agent on\r');
-      }
-      const event = determineEvent(data);
-
-      if (event === BluetoothEvent.Connected) {
-        this.emit(BluetoothEvent.Connected, data);
-      }
-
-      if (event === BluetoothEvent.Disconnected) {
-        this.emit(BluetoothEvent.Disconnected, data);
-      }
+    this.terminal.onData((terminalRow) => {
+      this.startBlueControl(terminalRow);
+      this.eventHandling(terminalRow);
     });
+  }
+
+  private startBlueControl(terminalRow: string) {
+    if (terminalRow.includes('bluetoothctl is ') && terminalRow.includes('/usr/bin/bluetoothctl')) {
+      this.terminal.write('bluetoothctl\r');
+      this.terminal.write('power on\r');
+      this.terminal.write('agent on\r');
+    }
+  }
+
+  private eventHandling(terminalRow: string) {
+    const event = determineEvent(terminalRow);
+
+    if (Object.values(BluetoothEvent).includes(event as BluetoothEvent)) {
+      this.emit(event as string, terminalRow);
+    }
   }
 }
