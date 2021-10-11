@@ -1,3 +1,2 @@
-export class Harald {
-
-}
+export * from './harald';
+export * from './enums/BluetoothEvent.enum';
