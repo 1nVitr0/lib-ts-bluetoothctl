@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import { HaraldDevice } from "../interfaces/HaraldDevice.interface";
-import { extractDeviceName, extractMacAddress, isNewDevice, isMacAddress } from "../utils/device.util";
+import { extractDeviceName, extractMacAddress, isNewDevice, isMacAddress, extractDevicesFromString } from "../utils/device.util";
 
 export class HaraldDevices {
   devices: HaraldDevice[] = [];
@@ -10,13 +10,8 @@ export class HaraldDevices {
   }
 
   init() {
-    const devicesFromTerminal = execSync('bluetoothctl devices').toString().trim().split('\n');
-    devicesFromTerminal.forEach((device) => {
-      const macAddress = extractMacAddress(device);
-      const deviceName = extractDeviceName(device);
-
-      this.devices.push({ deviceName, macAddress });
-    });
+    const output = execSync('bluetoothctl devices').toString();
+    this.devices = extractDevicesFromString(output);
   }
 
   findDevice(input: string): HaraldDevice {

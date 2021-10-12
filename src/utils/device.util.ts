@@ -1,3 +1,5 @@
+import { HaraldDevice } from "../interfaces/HaraldDevice.interface";
+
 const macAddressRegexString = '(?<macAddress>[a-fA-F0-9]{2}(?:\:[a-fA-F0-9]{2}){5})';
 
 export const extractMacAddress = (str: string): string => {
@@ -20,3 +22,10 @@ export const extractDeviceName = (str: string): string => {
 };
 export const isMacAddress = (str: string): boolean => new RegExp(macAddressRegexString).test(str);
 export const isNewDevice = (str: string): boolean => /\[NEW\] Device/.test(str);
+export const extractDevicesFromString = (str: string): HaraldDevice[] => str
+  .trim()
+  .split('\n')
+  .map((line) => ({
+    macAddress: extractMacAddress(line),
+    deviceName: extractDeviceName(line),
+  }))

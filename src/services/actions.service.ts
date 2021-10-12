@@ -1,7 +1,8 @@
 import { execSync } from "child_process";
 import { DeviceInfo } from "../interfaces/DeviceInfo.interface";
+import { HaraldDevice } from "../interfaces/HaraldDevice.interface";
 import { HaraldDevices } from "../stores/device.store";
-import { extractMacAddress, isMacAddress } from "../utils/device.util";
+import { extractDevicesFromString, extractMacAddress, isMacAddress } from "../utils/device.util";
 import { outputToJson } from "../utils/outputToJson.util";
 
 export class HaraldActions {
@@ -54,10 +55,10 @@ export class HaraldActions {
       ...outputToJson<DeviceInfo>(output),
     };
   }
-  getPairedDevices(): string {
-    return execSync(`bluetoothctl paired-devices`).toString();
+  getPairedDevices(): HaraldDevice[] {
+    return extractDevicesFromString(execSync(`bluetoothctl paired-devices`).toString());
   }
-  getDevices(): string {
-    return execSync(`bluetoothctl devices`).toString();
+  getDevices(): HaraldDevice[] {
+    return extractDevicesFromString(execSync(`bluetoothctl devices`).toString());
   }
 }
