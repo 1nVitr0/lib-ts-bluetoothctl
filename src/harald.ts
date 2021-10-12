@@ -6,7 +6,7 @@ import stripAnsi from 'strip-ansi';
 import { BluetoothEvent } from './enums/BluetoothEvent.enum';
 import { HaraldDevices } from './stores/device.store';
 import { extractMacAddress } from './utils/device.util';
-import { determineEvent } from './utils/determineEvent';
+import { determineEvent } from './utils/determineEvent.util';
 import { HaraldEvent } from './interfaces/HaraldEvent.interface';
 import { HaraldActions } from './services/actions.service';
 
