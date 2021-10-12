@@ -1,6 +1,6 @@
 {
-  "name": "harald",
-  "version": "0.0.1",
+  "name": "@sieem/harald",
+  "version": "0.1.1",
   "description": "Node wrapper for bluetoothctl",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,7 +20,7 @@
     "url": "git+https://github.com/sieem/harald.git"
   },
   "files": [
-    "lib/**/*"
+    "dist/**/*"
   ],
   "devDependencies": {
     "@types/node": "^16.10.3",
