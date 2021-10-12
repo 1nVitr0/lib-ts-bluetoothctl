@@ -1,51 +1,58 @@
+import { execSync } from 'child_process';
 import EventEmitter from 'events';
 import { IPty, spawn } from 'node-pty';
 import { platform } from 'os';
+import stripAnsi from 'strip-ansi';
 import { BluetoothEvent } from './enums/BluetoothEvent.enum';
+import { HaraldDevices } from './stores/device.store';
+import { extractMacAddress } from './utils/device.util';
 import { determineEvent } from './utils/determineEvent';
+import { HaraldEvent } from './interfaces/HaraldEvent.interface';
 
-export interface IHarald {
-  autoAccept: boolean;
-}
 
 export class Harald extends EventEmitter {
   terminal!: IPty;
+  haraldDevices!: HaraldDevices;
 
-
-  constructor(options: IHarald) {
+  constructor() {
     super();
+    
+    this.haraldDevices = new HaraldDevices();
 
-    this.terminal = spawn('bash', [], {
-      name: 'xterm-color',
-      cols: 100,
-      rows: 40,
-    });
+    this.terminal = spawn('bash', [],  {});
+
 
     if (platform() == 'linux') {
-      this.terminal.write('type bluetoothctl\r');
+      if (execSync('type bluetoothctl').includes('/usr/bin/bluetoothctl')) {
+        this.terminal.write('bluetoothctl\r');
+        this.terminal.write('power on\r');
+        this.terminal.write('agent on\r');
+        this.haraldDevices.init();
+      } else {
+        throw 'bluetoothctl not found on the system';
+      }
+
     } else {
       throw `Expected platform linux, recieved platform ${platform()}`;
     }
 
     this.terminal.onData((terminalRow) => {
-      this.startBlueControl(terminalRow);
+      terminalRow = stripAnsi(terminalRow);
+      this.haraldDevices.checkForNewDevice(terminalRow);
       this.eventHandling(terminalRow);
     });
   }
 
-  private startBlueControl(terminalRow: string) {
-    if (terminalRow.includes('bluetoothctl is ') && terminalRow.includes('/usr/bin/bluetoothctl')) {
-      this.terminal.write('bluetoothctl\r');
-      this.terminal.write('power on\r');
-      this.terminal.write('agent on\r');
-    }
-  }
-
-  private eventHandling(terminalRow: string) {
+  private eventHandling(terminalRow: string): void {
     const event = determineEvent(terminalRow);
 
     if (Object.values(BluetoothEvent).includes(event as BluetoothEvent)) {
-      this.emit(event as string, terminalRow);
+      const eventData: HaraldEvent = {
+        device: this.haraldDevices.findDevice(extractMacAddress(terminalRow)),
+        event: event as BluetoothEvent,
+      };
+
+      this.emit(event as string, eventData);
     }
   }
 }
