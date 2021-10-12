@@ -19,13 +19,25 @@ export class HaraldDevices {
     });
   }
 
-  findDevice(macAddressToFind: string): HaraldDevice {
-    const foundDevice = this.devices.find(({ macAddress }) => macAddress === macAddressToFind);
-    if (!foundDevice) {
-      throw `Device not found, tried to search for ${macAddressToFind}`;
+  findDevice(input: string): HaraldDevice {
+    if (isMacAddress(input)) {
+      const foundDevice = this.devices.find(({ macAddress }) => macAddress === input);
+
+      if (!foundDevice) {
+        throw `Device not found, tried to search for ${input}`;
+      }
+
+      return foundDevice;
+    } else {
+      const foundDevice = this.devices.find(({ deviceName }) => deviceName === input);
+
+      if (!foundDevice) {
+        throw `Device not found, tried to search for ${input}`;
+      }
+
+      return foundDevice;
     }
 
-    return foundDevice;
   }
 
   checkForNewDevice(terminalRow: string) {
