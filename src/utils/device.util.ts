@@ -22,10 +22,13 @@ export const extractDeviceName = (str: string): string => {
 };
 export const isMacAddress = (str: string): boolean => new RegExp(macAddressRegexString).test(str);
 export const isNewDevice = (str: string): boolean => /\[NEW\] Device/.test(str);
-export const extractDevicesFromString = (str: string): HaraldDevice[] => str
-  .trim()
-  .split('\n')
-  .map((line) => ({
-    macAddress: extractMacAddress(line),
-    deviceName: extractDeviceName(line),
-  }))
+export const extractDevicesFromString = (str: string): HaraldDevice[] => 
+  str === '' // when there are no devices, you end up with an empty string
+    ? []
+    : str
+      .trim()
+      .split('\n')
+      .map((line) => ({
+        macAddress: extractMacAddress(line),
+        deviceName: extractDeviceName(line),
+      }))

@@ -5,9 +5,7 @@ import { extractDeviceName, extractMacAddress, isNewDevice, isMacAddress, extrac
 export class HaraldDevices {
   devices: HaraldDevice[] = [];
 
-  constructor() {
-
-  }
+  constructor() {}
 
   init() {
     const output = execSync('bluetoothctl devices').toString();

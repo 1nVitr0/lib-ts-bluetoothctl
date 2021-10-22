@@ -20,7 +20,7 @@ export class Harald extends EventEmitter {
 
     this.haraldDevices = new HaraldDevices();
     this.actions = new HaraldActions(this.haraldDevices);
-    this.terminal = spawn('bash', [],  {});
+    this.terminal = spawn('bash', [], {});
 
     if (platform() == 'linux') {
       if (execSync('type bluetoothctl').includes('/usr/bin/bluetoothctl')) {
