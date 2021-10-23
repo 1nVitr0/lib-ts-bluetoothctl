@@ -31,4 +31,4 @@ export const extractDevicesFromString = (str: string): HaraldDevice[] =>
       .map((line) => ({
         macAddress: extractMacAddress(line),
         deviceName: extractDeviceName(line),
-      }))
+      }));

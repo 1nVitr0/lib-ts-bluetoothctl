@@ -1,15 +1,15 @@
 export interface DeviceInfo {
   macAddress?: string;     // 24:DA:9B:C6:82:AD
-  Name: string;           // Moto X 2014
-  Alias: string;          // Moto X 2014
-  Class: string;          // 0x005a020c
-  Icon: string;           // phone
-  Paired: boolean;        // yes
-  Trusted: boolean;       // no
-  Blocked: boolean;       // no
-  Connected: boolean;     // yes
-  LegacyPairing: boolean; // no
-  UUID: string[];         // OBEX Object Push          (00001105-0000-1000-8000-00805f9b34fb)
+  name: string;           // Moto X 2014
+  alias: string;          // Moto X 2014
+  class: string;          // 0x005a020c
+  icon: string;           // phone
+  paired: boolean;        // yes
+  trusted: boolean;       // no
+  blocked: boolean;       // no
+  connected: boolean;     // yes
+  legacyPairing: boolean; // no
+  uUID: string[];         // OBEX Object Push          (00001105-0000-1000-8000-00805f9b34fb)
                           // Headset                   (00001108-0000-1000-8000-00805f9b34fb)
                           // Audio Source              (0000110a-0000-1000-8000-00805f9b34fb)
                           // A/V Remote Control Target (0000110c-0000-1000-8000-00805f9b34fb)
@@ -24,5 +24,5 @@ export interface DeviceInfo {
                           // PnP Information           (00001200-0000-1000-8000-00805f9b34fb)
                           // Generic Access Profile    (00001800-0000-1000-8000-00805f9b34fb)
                           // Generic Attribute Profile (00001801-0000-1000-8000-00805f9b34fb)
-  Modalias: string;       // bluetooth:v00E0p1200d1436
+  modalias: string;       // bluetooth:v00E0p1200d1436
 }

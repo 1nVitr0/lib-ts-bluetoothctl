@@ -1,18 +1,24 @@
 import { execSync } from "child_process";
 import { HaraldDevice } from "../interfaces/HaraldDevice.interface";
+import { HaraldActions } from "../services/actions.service";
 import { extractDeviceName, extractMacAddress, isNewDevice, isMacAddress, extractDevicesFromString } from "../utils/device.util";
 
 export class HaraldDevices {
   devices: HaraldDevice[] = [];
+  actions = new HaraldActions(this);
 
   constructor() {}
 
   init() {
     const output = execSync('bluetoothctl devices').toString();
-    this.devices = extractDevicesFromString(output);
+    this.devices = extractDevicesFromString(output)
+      .map((device) => ({
+        ...device,
+        connected: this.isConnected(device.macAddress),
+      }));
   }
 
-  findDevice(input: string): HaraldDevice {
+  findDevice(input: HaraldDevice['macAddress'] | HaraldDevice['deviceName']): HaraldDevice {
     if (isMacAddress(input)) {
       const foundDevice = this.devices.find(({ macAddress }) => macAddress === input);
 
@@ -39,11 +45,26 @@ export class HaraldDevices {
     }
   }
 
+  updateConnected(macAddress: HaraldDevice['macAddress']) {
+    const device = this.findDevice(macAddress);
+    device.connected = this.isConnected(macAddress);
+  }
+
+  connectedDevices() {
+    return this.devices.filter((device) => device.connected);
+  }
+
   private addDevice(terminalRow: string) {
     const macAddress = extractMacAddress(terminalRow);
     const deviceName = extractDeviceName(terminalRow);
+    const connected = this.isConnected(macAddress);
 
-    this.devices.push({ macAddress, deviceName });
+    this.devices.push({ macAddress, deviceName, connected });
+  }
+
+  private isConnected(macAddress: HaraldDevice['macAddress']) {
+    const { connected } = this.actions.info(macAddress);
+    return connected;
   }
 }
 

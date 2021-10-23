@@ -12,14 +12,12 @@ import { HaraldActions } from './services/actions.service';
 
 export class Harald extends EventEmitter {
   private terminal!: IPty;
-  private haraldDevices!: HaraldDevices;
-  actions!: HaraldActions;
+  private haraldDevices = new HaraldDevices;
+  actions = new HaraldActions(this.haraldDevices);
+
 
   constructor() {
     super();
-
-    this.haraldDevices = new HaraldDevices();
-    this.actions = new HaraldActions(this.haraldDevices);
     this.terminal = spawn('bash', [], {});
 
     if (platform() == 'linux') {
@@ -43,12 +41,20 @@ export class Harald extends EventEmitter {
     });
   }
 
+  connectedDevices() {
+    return this.haraldDevices.connectedDevices();
+  }
+
   private eventHandling(terminalRow: string): void {
     const event = determineEvent(terminalRow);
 
     if (Object.values(BluetoothEvent).includes(event as BluetoothEvent)) {
+      const macAddress = extractMacAddress(terminalRow);
+      const device = this.haraldDevices.findDevice(macAddress);
+      this.haraldDevices.updateConnected(macAddress);
+
       const eventData: HaraldEvent = {
-        device: this.haraldDevices.findDevice(extractMacAddress(terminalRow)),
+        device,
         event: event as BluetoothEvent,
       };
 

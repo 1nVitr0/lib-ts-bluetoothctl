@@ -44,7 +44,7 @@ harald.actions.unblock(input: macAddress || deviceName)
 harald.actions.connect(input: macAddress || deviceName)
 harald.actions.disconnect(input: macAddress || deviceName)
 harald.actions.remove(input: macAddress || deviceName)
-harald.actions.info(input: macAddress || deviceName): {macAddress, Name, Paired, Connected, ...}
+harald.actions.info(input: macAddress || deviceName): {macAddress, name, paired, connected, ...}
 harald.actions.getPairedDevices(): [{ macAddress: '00:00:00:00:00:00', deviceName: 'Pocophone F1' }]
 harald.actions.getDevices(): [{ macAddress: '00:00:00:00:00:00', deviceName: 'Pocophone F1' }]
 ```
