@@ -30,6 +30,11 @@ harald.on(BluetoothEvent.Disconnected, ({ device, event }) => {
   console.log(device); // { macAddress: '00:00:00:00:00:00', name: 'Pocophone F1' }
 });
 
+harald.on(BluetoothEvent.NewDevice, ({ device, event }) => {
+  console.log(event); // 'disconnected'
+  console.log(device); // { macAddress: '00:00:00:00:00:00', name: 'Pocophone F1' }
+});
+
 // Available actions
 harald.actions.agent(start: boolean)
 harald.actions.power(start: boolean)
