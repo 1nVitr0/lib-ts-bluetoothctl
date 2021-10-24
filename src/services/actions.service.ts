@@ -1,11 +1,12 @@
-import { execSync } from "child_process";
-import { IPty, spawn } from "node-pty";
+import { ChildProcess, exec, execSync } from "child_process";
 import { HaraldDevice } from "../interfaces/HaraldDevice.interface";
 import { HaraldDevices } from "../stores/device.store";
 import { extractMacAddressesFromString, extractMacAddress, isMacAddress } from "../utils/device.util";
 import { outputToJson } from "../utils/outputToJson.util";
 
 export class HaraldActions {
+  scanTerminal!: ChildProcess;
+
   constructor(private haraldDevices: HaraldDevices) {}
 
   agent(start: boolean): string {
@@ -14,8 +15,14 @@ export class HaraldActions {
   power(start: boolean): string {
     return execSync(`bluetoothctl power ${start ? 'on' : 'off'}`).toString();
   }
-  scan(startScan: boolean): string {
-    return execSync(`bluetoothctl scan ${startScan ? 'on' : 'off'}`).toString();
+  scan(startScan: boolean): void {
+    if (startScan) {
+      this.scanTerminal = exec('bluetoothctl scan on');
+    } else if (this.scanTerminal) {
+      this.scanTerminal.kill('SIGTERM');
+    } else {
+      console.warn('No terminal to kill, scanning was probably not on');
+    }
   }
   pairable(canPairable: boolean): string {
     return execSync(`bluetoothctl pairable ${canPairable ? 'on' : 'off'}`).toString();

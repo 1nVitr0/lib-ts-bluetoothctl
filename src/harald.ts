@@ -11,14 +11,13 @@ import { HaraldEvent } from './interfaces/HaraldEvent.interface';
 import { HaraldActions } from './services/actions.service';
 
 export class Harald extends EventEmitter {
-  private terminal!: IPty;
+  private terminal: IPty = spawn('bash', [], {});
   private haraldDevices = new HaraldDevices;
   actions = new HaraldActions(this.haraldDevices);
 
 
   constructor() {
     super();
-    this.terminal = spawn('bash', [], {});
 
     if (platform() === 'linux') {
       if (execSync('type bluetoothctl').includes('/usr/bin/bluetoothctl')) {
