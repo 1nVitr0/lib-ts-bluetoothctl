@@ -1,7 +1,7 @@
 import { BluetoothEvent } from "..";
-import { HaraldDevice } from "./HaraldDevice.interface";
+import { HaraldDeviceMapping } from "./HaraldDeviceMapping.interface";
 
 export interface HaraldEvent {
-  device: HaraldDevice,
+  device: HaraldDeviceMapping,
   event: BluetoothEvent,
 }

@@ -1,8 +1,8 @@
 import { execSync } from "child_process";
-import { DeviceInfo } from "../interfaces/DeviceInfo.interface";
+import { IPty, spawn } from "node-pty";
 import { HaraldDevice } from "../interfaces/HaraldDevice.interface";
 import { HaraldDevices } from "../stores/device.store";
-import { extractDevicesFromString, extractMacAddress, isMacAddress } from "../utils/device.util";
+import { extractMacAddressesFromString, extractMacAddress, isMacAddress } from "../utils/device.util";
 import { outputToJson } from "../utils/outputToJson.util";
 
 export class HaraldActions {
@@ -47,18 +47,22 @@ export class HaraldActions {
   remove(input: string): string {
     return execSync(`bluetoothctl remove ${isMacAddress(input) ? input : this.haraldDevices.findDevice(input).macAddress}`).toString();
   }
-  info(input: string): DeviceInfo {
+  info(input: string): HaraldDevice {
     const output = execSync(`bluetoothctl info ${isMacAddress(input) ? input : this.haraldDevices.findDevice(input).macAddress}`).toString();
     
     return {
+      ...outputToJson<HaraldDevice>(output),
       macAddress: extractMacAddress(output),
-      ...outputToJson<DeviceInfo>(output),
     };
   }
   getPairedDevices(): HaraldDevice[] {
-    return extractDevicesFromString(execSync(`bluetoothctl paired-devices`).toString());
+    return extractMacAddressesFromString(execSync(`bluetoothctl paired-devices`).toString()).map((macAddress) => this.info(macAddress));
   }
   getDevices(): HaraldDevice[] {
-    return extractDevicesFromString(execSync(`bluetoothctl devices`).toString());
+    return extractMacAddressesFromString(execSync(`bluetoothctl devices`).toString()).map((macAddress) => this.info(macAddress));
+  }
+
+  connectedDevices(): HaraldDevice[] {
+    return this.getDevices().filter((device) => device.connected);
   }
 }

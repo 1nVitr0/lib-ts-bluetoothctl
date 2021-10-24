@@ -1,4 +1,4 @@
-import { HaraldDevice } from "../interfaces/HaraldDevice.interface";
+import { HaraldDeviceMapping } from "../interfaces/HaraldDeviceMapping.interface";
 
 const macAddressRegexString = '(?<macAddress>[a-fA-F0-9]{2}(?:\:[a-fA-F0-9]{2}){5})';
 
@@ -12,17 +12,17 @@ export const extractMacAddress = (str: string): string => {
   return macAddress;
 };
 export const extractDeviceName = (str: string): string => {
-  const deviceName = new RegExp(`${macAddressRegexString} (?<device>[^\r\n]*)`).exec(str)?.groups?.device;
+  const name = new RegExp(`${macAddressRegexString} (?<device>[^\r\n]*)`).exec(str)?.groups?.device;
 
-  if (!deviceName) {
+  if (!name) {
     throw `couldn't extract device name, tried to find it in '${str}'`;
   }
 
-  return deviceName;
+  return name;
 };
 export const isMacAddress = (str: string): boolean => new RegExp(macAddressRegexString).test(str);
 export const isNewDevice = (str: string): boolean => /\[NEW\] Device/.test(str);
-export const extractDevicesFromString = (str: string): HaraldDevice[] => 
+export const extractDevicesFromString = (str: string): HaraldDeviceMapping[] =>
   str === '' // when there are no devices, you end up with an empty string
     ? []
     : str
@@ -30,5 +30,13 @@ export const extractDevicesFromString = (str: string): HaraldDevice[] =>
       .split('\n')
       .map((line) => ({
         macAddress: extractMacAddress(line),
-        deviceName: extractDeviceName(line),
+        name: extractDeviceName(line),
       }));
+
+export const extractMacAddressesFromString = (str: string): string[] => 
+  str === '' // when there are no devices, you end up with an empty string
+    ? []
+    : str
+      .trim()
+      .split('\n')
+      .map((line) => extractMacAddress(line));

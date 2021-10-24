@@ -20,7 +20,7 @@ export class Harald extends EventEmitter {
     super();
     this.terminal = spawn('bash', [], {});
 
-    if (platform() == 'linux') {
+    if (platform() === 'linux') {
       if (execSync('type bluetoothctl').includes('/usr/bin/bluetoothctl')) {
         this.terminal.write('bluetoothctl\r');
         this.terminal.write('power on\r');
@@ -41,17 +41,12 @@ export class Harald extends EventEmitter {
     });
   }
 
-  connectedDevices() {
-    return this.haraldDevices.connectedDevices();
-  }
-
   private eventHandling(terminalRow: string): void {
     const event = determineEvent(terminalRow);
 
     if (Object.values(BluetoothEvent).includes(event as BluetoothEvent)) {
       const macAddress = extractMacAddress(terminalRow);
       const device = this.haraldDevices.findDevice(macAddress);
-      this.haraldDevices.updateConnected(macAddress);
 
       const eventData: HaraldEvent = {
         device,
