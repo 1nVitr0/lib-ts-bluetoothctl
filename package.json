@@ -1,6 +1,6 @@
 {
   "name": "bluetoothctl-ts",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Node wrapper for bluetoothctl",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "node-pty": "^1.0.0",
-    "strip-ansi": "^7.1.0"
+    "strip-ansi": "^6.0.1"
   },
   "repository": {
     "type": "git",
