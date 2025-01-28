@@ -1,2 +1,2 @@
-export * from './harald';
-export * from './enums/BluetoothEvent.enum';
+export * from "./bluetoothctl";
+export * from "./enums/BluetoothEvent.enum";

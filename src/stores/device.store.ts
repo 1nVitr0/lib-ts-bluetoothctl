@@ -1,20 +1,28 @@
 import { execSync } from "child_process";
-import { HaraldDeviceMapping } from "../interfaces/HaraldDeviceMapping.interface";
-import { HaraldActions } from "../services/actions.service";
-import { extractDeviceName, extractMacAddress, isNewDevice, isMacAddress, extractDevicesFromString } from "../utils/device.util";
+import { BluetoothCtlDeviceMapping } from "../interfaces/BluetoothCtlDeviceMapping.interface";
+import { BluetoothCtlActions } from "../services/actions.service";
+import {
+  extractDeviceName,
+  extractMacAddress,
+  isNewDevice,
+  isMacAddress,
+  extractDevicesFromString,
+} from "../utils/device.util";
 
-export class HaraldDevices {
-  devices: HaraldDeviceMapping[] = [];
-  actions = new HaraldActions(this);
+export class BluetoothCtlDevices {
+  devices: BluetoothCtlDeviceMapping[] = [];
+  actions = new BluetoothCtlActions(this);
 
   constructor() {}
 
   init() {
-    const output = execSync('bluetoothctl devices').toString();
+    const output = execSync("bluetoothctl devices").toString();
     this.devices = extractDevicesFromString(output);
   }
 
-  findDevice(input: HaraldDeviceMapping['macAddress'] | HaraldDeviceMapping['name']): HaraldDeviceMapping {
+  findDevice(
+    input: BluetoothCtlDeviceMapping["macAddress"] | BluetoothCtlDeviceMapping["name"]
+  ): BluetoothCtlDeviceMapping {
     if (isMacAddress(input)) {
       const foundDevice = this.devices.find(({ macAddress }) => macAddress === input);
 
@@ -32,7 +40,6 @@ export class HaraldDevices {
 
       return foundDevice;
     }
-
   }
 
   checkForNewDevice(terminalRow: string) {
