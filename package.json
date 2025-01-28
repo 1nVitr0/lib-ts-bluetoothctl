@@ -1,5 +1,5 @@
 {
-  "name": "@1nVitr0/bluetoothctl",
+  "name": "bluetoothctl-ts",
   "version": "0.2.0",
   "description": "Node wrapper for bluetoothctl",
   "main": "dist/index.js",
