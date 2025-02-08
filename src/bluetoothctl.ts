@@ -9,6 +9,7 @@ import { extractMacAddress } from "./utils/device.util";
 import { determineEvent } from "./utils/determineEvent.util";
 import { BluetoothCtlEvent } from "./interfaces/BluetoothCtlEvent.interface";
 import { BluetoothCtlActions } from "./services/actions.service";
+import { BluetoothCtlDeviceMapping } from "./interfaces/BluetoothCtlDeviceMapping.interface";
 
 export class BluetoothCtl extends EventEmitter {
   private terminal: IPty = spawn("bash", [], {});
@@ -43,7 +44,13 @@ export class BluetoothCtl extends EventEmitter {
 
     if (Object.values(BluetoothEvent).includes(event as BluetoothEvent)) {
       const macAddress = extractMacAddress(terminalRow);
-      const device = this.devices.findDevice(macAddress);
+      let device: BluetoothCtlDeviceMapping = { macAddress, name: "Unknown Device" };
+
+      try {
+        device = this.devices.findDevice(macAddress);
+      } catch (error) {
+        // Ignore on connect, device immediately disconnected
+      }
 
       const eventData: BluetoothCtlEvent = {
         device,
